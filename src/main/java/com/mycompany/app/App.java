@@ -1,14 +1,30 @@
-/*----------------------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License. See LICENSE in the project root for license information.
- *---------------------------------------------------------------------------------------*/
-
 package com.mycompany.app;
 
-public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello Remote World!" );
+import java.net.*;
+import java.io.*;
+
+public class App {
+    public static void main(String[] args) {
+        try {
+            Socket s = new Socket("localhost", 3333);
+            DataInputStream din = new DataInputStream(s.getInputStream());
+            DataOutputStream dout = new DataOutputStream(s.getOutputStream());
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+            String str = "", str2 = "";
+            while (!str.equals("stop")) {
+                str = br.readLine();
+                dout.writeUTF(str);
+                dout.flush();
+                str2 = din.readUTF();
+                System.out.println("Server says: " + str2);
+            }
+
+            dout.close();
+            s.close();
+
+        } catch (Exception e) {
+            System.out.println("The server close the connection");
+        }
     }
 }
