@@ -1,34 +1,46 @@
 package com.mycompany.app;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.net.Socket;
+import java.io.*;
+import java.net.*;
 
 /**
  * Client
  */
 public class Client {
+    private Socket socket;
+    private int port;
+    private String ip;
+    private DataInputStream input;
+    private DataOutputStream out;
 
-    private Socket socketClient;
-    private String port;
-    private PrintWriter out;
-    private BufferedReader in;
+    public static void main(String[] args) {
+        Client clientSocket = new Client("localhost", 3000);
+    }
 
-    public Client(String port) {
+    public Client(String ip, int port) {
+        this.ip = ip;
         this.port = port;
-    }
-
-    public void Connect() {
-        this.socketClient = new Socket("localhost", this.port);
-    }
-
-    public String sendMessage(String msg) {
         try {
-            this.out.print(msg);
-            String response = in.readLine();
-            return response;
+            Socket s = new Socket(this.ip, this.port);
+            DataInputStream din = new DataInputStream(s.getInputStream());
+            DataOutputStream dout = new DataOutputStream(s.getOutputStream());
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+            String str = "", str2 = "";
+            while (!str.equals("stop")) {
+                str = br.readLine();
+                dout.writeUTF(str);
+                dout.flush();
+                str2 = din.readUTF();
+                System.out.println("Server says: " + str2);
+            }
+
+            dout.close();
+            s.close();
+
         } catch (Exception e) {
-            return null;
+            System.out.println("Server Close Connection");
         }
+
     }
 }
