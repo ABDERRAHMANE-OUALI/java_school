@@ -1,3 +1,3 @@
-git remote add origin https://github.com/ANDRUXUIS/java_school.git
-git branch -M main
-git push -u origin main
+git add .
+git commit -m "something"
+git push --up-stream origin
